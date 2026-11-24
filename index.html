@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>JO Dev Studio — Tutorial de Redes y Pentesting Ético</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  button,[role="button"],select,summary,input:not([type="checkbox"],[type="radio"]){min-height:2.25rem}
+  :root{
+    --bg:#f4f6f4; --surface:#fff; --surface-2:#e9ede9; --ink:#111613; --ink-soft:#3d4741; --line:#d3dad3;
+    --accent:#0d7a4a; --accent-strong:#095c37; --accent-soft:#dff2e6; --dark:#0d120e; --dark-ink:#d7e8d7; --dark-dim:#8a9a8d;
+    --code-bg:#10160f; --radius:14px; --warn-bg:#fff7e6; --warn-line:#e5c07b; --warn-ink:#5c4310;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#0b0f0c;--surface:#131915;--surface-2:#1a211b;--ink:#eef4ee;--ink-soft:#a9b8ab;--line:#2a342b;--accent:#4ade80;--accent-strong:#86efac;--accent-soft:#173325;--code-bg:#080c09;--warn-bg:#2a2110;--warn-line:#6b551f;--warn-ink:#f5d98a}
+  }
+  *{box-sizing:border-box} html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 20px 72px}
+  .hero{padding:44px 0 8px}
+  .prompt-line{font-family:"JetBrains Mono",monospace;font-size:.85rem;color:var(--accent);margin:0 0 14px}
+  h1{font-size:clamp(2.4rem,6vw,3.9rem);line-height:1.02;font-weight:800;letter-spacing:-.02em;margin:0 0 16px}
+  h1 .dev{color:var(--accent)}
+  .hero-sub{font-size:1.13rem;color:var(--ink-soft);margin:0 0 10px;max-width:38rem}
+  .hero-sub strong{color:var(--ink)}
+  .hero-meta{font-family:"JetBrains Mono",monospace;font-size:.85rem;color:var(--ink-soft);margin:0 0 26px}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+  .btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:10px 20px;border-radius:10px;font:inherit;font-weight:700;font-size:.98rem;text-decoration:none;cursor:pointer;border:1px solid transparent}
+  .btn-primary{background:var(--accent);color:#fff} @media(prefers-color-scheme:dark){.btn-primary{color:#06130b}}
+  .btn-primary:hover{background:var(--accent-strong)}
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)} .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  section{margin-top:64px} .sec-head{margin-bottom:22px}
+  .sec-tag{font-family:"JetBrains Mono",monospace;font-size:.8rem;color:var(--accent);margin:0 0 6px}
+  h2{font-size:clamp(1.55rem,3.4vw,2.1rem);font-weight:800;letter-spacing:-.015em;margin:0 0 8px;line-height:1.15}
+  h3{line-height:1.3}
+  .sec-lead{color:var(--ink-soft);margin:0;max-width:44rem}
+  /* Tutorial */
+  .toc{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .toc h3{margin:0 0 12px} .toc ol{margin:0;padding-left:22px;columns:2;column-gap:36px}
+  .toc li{margin:7px 0;break-inside:avoid} .toc a{color:var(--ink);text-decoration:none;font-weight:600} .toc a:hover{color:var(--accent);text-decoration:underline}
+  .chapter{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px 26px 10px;margin-top:18px;scroll-margin-top:16px}
+  .chapter .num{font-family:"JetBrains Mono",monospace;font-size:.78rem;color:var(--accent);font-weight:600;margin:0}
+  .chapter h3{font-size:1.35rem;margin:4px 0 10px;font-weight:800}
+  .chapter p,.chapter li{color:var(--ink-soft)} .chapter p strong,.chapter li strong{color:var(--ink)}
+  .chapter ul,.chapter ol{padding-left:22px} .chapter li{margin:6px 0}
+  .callout{background:var(--accent-soft);border-radius:10px;padding:16px 18px;margin:16px 0}
+  .callout p{margin:0;color:var(--ink)} 
+  .warn{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:10px;padding:16px 18px;margin:16px 0}
+  .warn p{margin:0;color:var(--warn-ink)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+  .mini{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .mini b{display:block;margin-bottom:4px;color:var(--ink)} .mini span{font-size:.92rem;color:var(--ink-soft)}
+  .mini code,.chapter code{font-family:"JetBrains Mono",monospace;font-size:.86em;color:var(--accent);font-weight:600}
+  .layers{list-style:none;padding:0;margin:16px 0}
+  .layers li{display:flex;gap:12px;align-items:baseline;padding:10px 0;border-bottom:1px dashed var(--line);margin:0}
+  .layers li:last-child{border-bottom:none}
+  .layers .n{font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--accent);min-width:2ch}
+  .layers .t{font-weight:700;color:var(--ink);min-width:130px}
+  .codeblock{background:var(--code-bg);border-radius:10px;overflow:hidden;margin:16px 0;border:1px solid rgba(255,255,255,.06)}
+  .codeblock pre{margin:0;padding:16px 18px;overflow-x:auto;font-family:"JetBrains Mono",monospace;font-size:.86rem;line-height:1.7;color:var(--dark-ink);white-space:pre-wrap;word-break:break-word}
+  .codeblock .bar{padding:8px 16px;background:rgba(255,255,255,.05);font-family:"JetBrains Mono",monospace;font-size:.75rem;color:var(--dark-dim)}
+  .checklist{list-style:none;padding:0;margin:14px 0}
+  .checklist li{padding:10px 0 10px 30px;position:relative;border-bottom:1px dashed var(--line)}
+  .checklist li:last-child{border-bottom:none}
+  .checklist li::before{content:"✓";position:absolute;left:0;top:10px;width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:.75rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+  /* Services / progress / html lesson - kept from before */
+  .services{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .service{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;display:flex;flex-direction:column;gap:8px}
+  .service .glyph{font-family:"JetBrains Mono",monospace;font-size:1.35rem;color:var(--accent);font-weight:600}
+  .service h3{margin:0;font-size:1.15rem} .service p{margin:0;color:var(--ink-soft);font-size:.95rem;flex:1}
+  .service .facts{border-top:1px dashed var(--line);padding-top:12px;font-family:"JetBrains Mono",monospace;font-size:.82rem;display:flex;flex-direction:column;gap:4px}
+  .service .facts b{color:var(--accent)}
+  .progress-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:8px 22px}
+  .lesson{display:flex;align-items:baseline;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)} .lesson:last-child{border-bottom:none}
+  .lesson .num{font-family:"JetBrains Mono",monospace;font-size:.8rem;color:var(--ink-soft);min-width:2ch}
+  .lesson .name{font-weight:700} .lesson .desc{color:var(--ink-soft);font-size:.92rem}
+  .lesson .done{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:.78rem;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:3px 10px;white-space:nowrap}
+  .lesson .now{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:.78rem;color:#fff;background:var(--accent);border-radius:999px;padding:3px 10px;white-space:nowrap}
+  @media(prefers-color-scheme:dark){.lesson .now{color:#06130b}}
+  .code-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 10px 8px 16px;background:rgba(255,255,255,.05)}
+  .code-bar span{font-family:"JetBrains Mono",monospace;font-size:.78rem;color:var(--dark-dim)}
+  .copy-btn{font-family:"JetBrains Mono",monospace;font-size:.8rem;background:rgba(255,255,255,.08);color:var(--dark-ink);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 14px;min-height:36px;cursor:pointer}
+  .bigcode{background:var(--code-bg);border-radius:var(--radius);overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+  .bigcode pre{margin:0;padding:18px 20px 22px;overflow-x:auto;font-family:"JetBrains Mono",monospace;font-size:.88rem;line-height:1.7;color:var(--dark-ink)}
+  .bigcode .tag{color:#7ee0a3}.bigcode .attr{color:#ffd479}.bigcode .com{color:var(--dark-dim);font-style:italic}.bigcode .txt{color:#f2f7f2}
+  .tag-table{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+  .tag-item{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .tag-item code{font-family:"JetBrains Mono",monospace;font-size:.9rem;color:var(--accent);font-weight:600}
+  .tag-item p{margin:4px 0 0;font-size:.9rem;color:var(--ink-soft)}
+  .demo{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .demo h3{margin:0 0 4px;font-size:1.1rem}.demo .demo-lead{margin:0 0 16px;color:var(--ink-soft);font-size:.94rem}
+  .demo-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+  .demo-controls input[type="text"]{flex:1 1 220px;font:inherit;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);min-height:44px}
+  .swatches{display:flex;gap:8px;align-items:center}.swatch{width:44px;height:44px;border-radius:10px;border:2px solid var(--line);cursor:pointer;padding:0}.swatch[aria-pressed="true"]{border-color:var(--ink)}
+  .preview{margin-top:18px;border:1px dashed var(--line);border-radius:10px;padding:26px 20px;text-align:center;background:var(--bg)}
+  .preview .pv-tag{font-family:"JetBrains Mono",monospace;font-size:.75rem;color:var(--ink-soft);margin:0 0 8px}
+  #pvTitle{margin:0;font-size:clamp(1.5rem,4.5vw,2.2rem);font-weight:800;letter-spacing:-.015em;word-break:break-word}
+  #pvText{margin:8px 0 0;color:var(--ink-soft)}
+  .contact{background:var(--dark);border-radius:var(--radius);padding:30px 28px;color:var(--dark-ink);display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between}
+  .contact h2{color:#fff;margin-bottom:6px}.contact p{margin:0;color:var(--dark-dim);max-width:30rem}.contact .btn-primary{flex-shrink:0}
+  footer{margin-top:44px;text-align:center;font-family:"JetBrains Mono",monospace;font-size:.8rem;color:var(--ink-soft)}
+  @media(max-width:760px){
+    .hero{padding-top:30px}.services,.grid3{grid-template-columns:1fr}.grid2,.tag-table{grid-template-columns:1fr}
+    .toc ol{columns:1}.chapter{padding:22px 18px 6px}.layers .t{min-width:0}
+    .lesson{flex-wrap:wrap;gap:4px 12px}.lesson .done,.lesson .now{margin-left:0}.contact{padding:24px 20px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <p class="prompt-line">$ ./jo-dev-studio --inicio</p>
+    <h1>JO <span class="dev">Dev</span> Studio</h1>
+    <p class="hero-sub"><strong>Páginas web, apps y bots con IA.</strong><br>Soy Jhankiel, programador. Desarrollo con Python y HTML soluciones claras y rápidas para tu negocio o proyecto.</p>
+    <p class="hero-meta">// Desarrollo web, apps y bots con IA</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#tutorial">📚 Leer el tutorial completo</a>
+      <a class="btn btn-ghost" href="#servicios">Ver servicios</a>
+      <a class="btn btn-ghost" href="#html">Lección de HTML</a>
+    </div>
+  </header>
+
+  <!-- TUTORIAL LARGO -->
+  <section id="tutorial">
+    <div class="sec-head">
+      <p class="sec-tag">Tutorial completo — desde cero</p>
+      <h2>Redes, Linux y Pentesting Ético: todo explicado paso a paso</h2>
+      <p class="sec-lead">Un tutorial largo para principiantes: primero entiendes cómo funciona una red, luego cómo se audita de forma legal, qué herramientas existen, qué vulnerabilidades se buscan y cómo practicar sin meterte en problemas. Léelo en orden la primera vez.</p>
+    </div>
+
+    <div class="warn"><p><strong>Regla número 1, sin excepción:</strong> pentesting solo con permiso por escrito del dueño del sistema, o en tus propios equipos y laboratorios. Escanear o entrar en redes ajenas sin permiso es delito en casi todos los países, aunque “solo estés mirando”. Todo lo de este tutorial es para aprender y defender, no para atacar a nadie.</p></div>
+
+    <nav class="toc" aria-label="Índice del tutorial">
+      <h3>Índice — 18 capítulos</h3>
+      <ol>
+        <li><a href="#cap1">Qué es una red</a></li>
+        <li><a href="#cap2">Modelo OSI y TCP/IP</a></li>
+        <li><a href="#cap3">IP, subredes y puertos</a></li>
+        <li><a href="#cap4">Protocolos que debes conocer</a></li>
+        <li><a href="#cap5">Qué pasa cuando abres una web</a></li>
+        <li><a href="#cap6">Linux para redes</a></li>
+        <li><a href="#cap7">Qué es el pentesting</a></li>
+        <li><a href="#cap8">Las fases de una auditoría</a></li>
+        <li><a href="#cap9">Herramientas por fase</a></li>
+        <li><a href="#cap10">Vulnerabilidades web (OWASP)</a></li>
+        <li><a href="#cap11">Wi-Fi y su seguridad</a></li>
+        <li><a href="#cap12">Contraseñas, hash y MFA</a></li>
+        <li><a href="#cap13">Phishing e ingeniería social</a></li>
+        <li><a href="#cap14">Tu laboratorio legal en casa</a></li>
+        <li><a href="#cap15">Dónde practicar gratis</a></li>
+        <li><a href="#cap16">Ruta de estudio de 90 días</a></li>
+        <li><a href="#cap17">Glosario rápido</a></li>
+        <li><a href="#cap18">Checklist final</a></li>
+      </ol>
+    </nav>
+
+    <article class="chapter" id="cap1">
+      <p class="num">CAPÍTULO 01</p><h3>Qué es una red, de verdad</h3>
+      <p>Una <strong>red</strong> es simplemente dos o más dispositivos que se hablan para compartir información. Tu teléfono, tu computadora, el router de tu casa y un servidor al otro lado del mundo forman parte de redes.</p>
+      <div class="grid3">
+        <div class="mini"><b>LAN — Red local</b><span>Tu casa u oficina. Dispositivos conectados al mismo router. Ejemplo: 192.168.1.x</span></div>
+        <div class="mini"><b>WAN — Red amplia</b><span>Varias LAN conectadas entre sí. Internet es la WAN más grande que existe.</span></div>
+        <div class="mini"><b>Servidor y cliente</b><span>El cliente pide (tu navegador) y el servidor responde (la página, el correo, el juego).</span></div>
+      </div>
+      <ul>
+        <li><strong>Router:</strong> reparte direcciones dentro de tu casa y conecta tu LAN con Internet. Es la puerta de salida.</li>
+        <li><strong>Switch:</strong> conecta equipos por cable dentro de la misma red local y entrega cada dato solo a quien debe recibirlo.</li>
+        <li><strong>Dirección MAC:</strong> identificador de fábrica de cada tarjeta de red. No cambia aunque cambies de casa.</li>
+        <li><strong>DHCP:</strong> servicio del router que asigna automáticamente una IP a cada equipo que se conecta.</li>
+        <li><strong>NAT:</strong> truco del router para que muchos equipos compartan una sola IP pública. Por fuera se ve una IP; por dentro cada equipo tiene la suya.</li>
+        <li><strong>Firewall:</strong> portero que decide qué conexiones entran y salen según reglas. Bloquea lo no permitido.</li>
+      </ul>
+      <div class="callout"><p><strong>Idea clave:</strong> casi todo en seguridad es entender quién habla con quién, por qué puerto y con qué permiso. Si entiendes el tráfico, entiendes el ataque y la defensa.</p></div>
+    </article>
+
+    <article class="chapter" id="cap2">
+      <p class="num">CAPÍTULO 02</p><h3>Modelo OSI y TCP/IP: las capas</h3>
+      <p>La comunicación se organiza en <strong>capas</strong>. Cada capa hace un trabajo y le pasa el resultado a la siguiente. Cuando algo falla, las capas te dicen dónde buscar.</p>
+      <ul class="layers">
+        <li><span class="n">7</span><span class="t">Aplicación</span><span>Lo que usa la persona: HTTP, DNS, correo, SSH.</span></li>
+        <li><span class="n">6</span><span class="t">Presentación</span><span>Formato y cifrado: TLS, codificación de datos.</span></li>
+        <li><span class="n">5</span><span class="t">Sesión</span><span>Abre, mantiene y cierra conversaciones.</span></li>
+        <li><span class="n">4</span><span class="t">Transporte</span><span>TCP y UDP: puertos y entrega de datos.</span></li>
+        <li><span class="n">3</span><span class="t">Red</span><span>Direcciones IP y rutas. Aquí trabaja el router.</span></li>
+        <li><span class="n">2</span><span class="t">Enlace</span><span>MAC, switches y Wi-Fi dentro de la red local.</span></li>
+        <li><span class="n">1</span><span class="t">Física</span><span>Cables, fibra, ondas de radio, voltajes.</span></li>
+      </ul>
+      <p>En la práctica se usa el modelo <strong>TCP/IP</strong>, que resume todo en 4 capas: Acceso a la red, Internet (IP), Transporte (TCP/UDP) y Aplicación. No memorices por memorizar: recuerda que <strong>un problema de capa 1 (cable roto) no se arregla tocando la capa 7 (la web)</strong>.</p>
+      <p><strong>Ejemplo:</strong> si el Wi-Fi conecta pero no abre ninguna página, la capa 2 funciona y puede estar fallando la capa 3 (sin IP válida) o DNS en capa 7.</p>
+    </article>
+
+    <article class="chapter" id="cap3">
+      <p class="num">CAPÍTULO 03</p><h3>Direcciones IP, subredes y puertos</h3>
+      <p>Una <strong>IP</strong> es la dirección de un equipo en la red, como el número de una casa. IPv4 se escribe en 4 números: <code>192.168.1.10</code>. IPv6 es más larga y nació porque IPv4 se quedó corta.</p>
+      <div class="grid2">
+        <div class="mini"><b>IP privada</b><span> Solo vale dentro de tu red: 192.168.x.x, 10.x.x.x, 172.16–31.x.x. No se ve desde Internet.</span></div>
+        <div class="mini"><b>IP pública</b><span>La que te da tu proveedor. Es la que ven las webs que visitas.</span></div>
+      </div>
+      <p><strong>Subred y máscara:</strong> <code>/24</code> o <code>255.255.255.0</code> significa que los 3 primeros números identifican la red y el último identifica al equipo. En 192.168.1.0/24 caben equipos del .1 al .254. El .1 suele ser el router.</p>
+      <p><strong>Puertos:</strong> si la IP es el edificio, el puerto es el apartamento. Un mismo servidor ofrece varios servicios, cada uno en su puerto:</p>
+      <div class="grid3">
+        <div class="mini"><b>22 — SSH</b><span>Administración remota segura por terminal.</span></div>
+        <div class="mini"><b>53 — DNS</b><span>Traduce nombres a IP.</span></div>
+        <div class="mini"><b>80 — HTTP</b><span>Web sin cifrar.</span></div>
+        <div class="mini"><b>443 — HTTPS</b><span>Web cifrada. La que debes usar.</span></div>
+        <div class="mini"><b>25 / 587 — SMTP</b><span>Envío de correo.</span></div>
+        <div class="mini"><b>3306 — MySQL</b><span>Bases de datos. Nunca debería estar abierto a Internet sin control.</span></div>
+        <div class="mini"><b>3389 — RDP</b><span>Escritorio remoto de Windows.</span></div>
+        <div class="mini"><b>21 — FTP</b><span>Archivos antiguo y sin cifrar. Hoy se prefiere SFTP.</span></div>
+        <div class="mini"><b>8080 — Web alt.</b><span>Puertos alternativos de aplicaciones web.</span></div>
+      </div>
+      <p><strong>TCP vs UDP:</strong> TCP confirma que todo llegó y en orden (webs, correo, archivos). UDP no confirma, pero es más rápido (videollamadas, juegos, DNS). Un pentester primero mira qué puertos están abiertos, porque cada puerto abierto es un servicio que puede estar bien o mal configurado.</p>
+    </article>
+
+    <article class="chapter" id="cap4">
+      <p class="num">CAPÍTULO 04</p><h3>Protocolos que debes conocer</h3>
+      <ul>
+        <li><strong>DNS:</strong> la agenda de Internet. Convierte <code>ejemplo.com</code> en una IP. Si el DNS falla, “no hay Internet” aunque la conexión esté bien.</li>
+        <li><strong>HTTP / HTTPS:</strong> cómo navegador y servidor se pasan páginas. HTTPS añade TLS: cifrado + identidad del sitio. Métodos clave: GET (pedir), POST (enviar), PUT, DELETE.</li>
+        <li><strong>DHCP:</strong> asigna IP, puerta de enlace y DNS automáticamente al conectarte.</li>
+        <li><strong>ARP:</strong> dentro de la LAN, traduce IP a MAC. Es útil y también es una de las superficies clásicas de ataque local, por eso las redes serias lo vigilan.</li>
+        <li><strong>ICMP:</strong> mensajes de control. <code>ping</code> lo usa para comprobar si un equipo responde.</li>
+        <li><strong>SSH:</strong> terminal remota cifrada. Sustituyó a Telnet, que enviaba todo en texto plano.</li>
+        <li><strong>SMTP / IMAP / POP3:</strong> envío y lectura de correo.</li>
+        <li><strong>TLS:</strong> el candado. Negocia claves y cifra la conversación para que nadie en el medio pueda leerla o modificarla.</li>
+      </ul>
+      <div class="callout"><p><strong>Para estudiar:</strong> abre las herramientas de desarrollador de tu navegador (F12 → Red) y recarga una página. Verás DNS, conexión, TLS y cada petición HTTP con su código: 200 bien, 301/302 redirección, 404 no encontrado, 500 error del servidor.</p></div>
+    </article>
+
+    <article class="chapter" id="cap5">
+      <p class="num">CAPÍTULO 05</p><h3>Qué pasa, paso a paso, cuando abres una web</h3>
+      <ol>
+        <li>Escribes un nombre. El sistema pregunta al <strong>DNS</strong> qué IP le corresponde.</li>
+        <li>Tu equipo mira si esa IP está en tu red o fuera. Si está fuera, todo sale por la <strong>puerta de enlace</strong> (tu router).</li>
+        <li>Se abre una conexión <strong>TCP</strong> con el servidor, normalmente al puerto 443.</li>
+        <li>Se negocia <strong>TLS</strong>: el servidor presenta su certificado y ambos acuerdan claves de sesión.</li>
+        <li>Tu navegador envía una petición <strong>HTTP</strong> cifrada: “dame esta página, con estas cookies”.</li>
+        <li>El servidor responde con HTML, y luego el navegador pide CSS, JavaScript e imágenes.</li>
+        <li>La sesión se mantiene con cookies. Por eso robar una cookie puede equivaler a robar una sesión iniciada — y por eso se protegen.</li>
+      </ol>
+      <p>Entender esta cadena te da el mapa completo de dónde puede fallar — o ser atacada — una conexión, y dónde se defiende cada tramo.</p>
+    </article>
+
+    <article class="chapter" id="cap6">
+      <p class="num">CAPÍTULO 06</p><h3>Linux para redes: comandos que hay que dominar</h3>
+      <p>Linux es el sistema del pentesting y de casi todos los servidores. Aprende qué hace cada comando y practícalos en tu propio equipo o laboratorio.</p>
+      <div class="codeblock"><div class="bar">Lectura — qué hace cada comando</div><pre>ip a              → tus interfaces y direcciones IP
+ip route          → tu puerta de enlace (router)
+ping 1.1.1.1      → ¿responde ese equipo? mide latencia
+traceroute host   → ruta salto a salto hasta el destino
+ss -tulpn         → puertos abiertos en TU máquina
+dig ejemplo.com   → consulta DNS detallada
+nslookup host     → consulta DNS simple
+curl -I https://… → cabeceras HTTP de una web
+cat /etc/hosts    → nombres locales forzados a mano
+ssh usuario@ip    → entrar por terminal cifrada a TU servidor</pre></div>
+      <ul>
+        <li><strong>Permisos:</strong> Linux separa usuario normal y <code>root</code>. Trabaja como usuario normal y usa <code>sudo</code> solo cuando haga falta.</li>
+        <li><strong>Archivos clave:</strong> <code>/etc/passwd</code> (cuentas), <code>/etc/hosts</code> (nombres locales), <code>~/.ssh/</code> (tus claves SSH).</li>
+        <li><strong>Claves SSH:</strong> más seguras que contraseñas. La privada nunca se comparte; la pública va en el servidor.</li>
+      </ul>
+    </article>
+
+    <article class="chapter" id="cap7">
+      <p class="num">CAPÍTULO 07</p><h3>Qué es el pentesting (y qué no es)</h3>
+      <p><strong>Pentesting</strong> = prueba de penetración autorizada. Un profesional intenta entrar en un sistema <em>con permiso, con alcance definido y con informe final</em>, para encontrar fallos antes que un delincuente. Sin permiso no es pentesting: es intrusión.</p>
+      <div class="grid3">
+        <div class="mini"><b>Sombrero blanco</b><span>Hacker ético. Permiso, contrato, informe y soluciones.</span></div>
+        <div class="mini"><b>Sombrero negro</b><span>Delincuente. Entra sin permiso para robar o dañar.</span></div>
+        <div class="mini"><b>Sombrero gris</b><span>Zona peligrosa: “ayuda” sin permiso. Sigue siendo ilegal.</span></div>
+      </div>
+      <ul>
+        <li><strong>Caja negra:</strong> el auditor no sabe nada del sistema, como un atacante externo.</li>
+        <li><strong>Caja blanca:</strong> se entrega código, diagramas y credenciales. Auditoría profunda.</li>
+        <li><strong>Caja gris:</strong> algo de información, por ejemplo una cuenta de usuario normal.</li>
+        <li><strong>Alcance (scope):</strong> qué IPs, webs y horarios están permitidos. Todo lo fuera del alcance está prohibido, aunque lo veas vulnerable.</li>
+        <li><strong>Reglas de enfrentamiento:</strong> qué técnicas se pueden usar y cuáles no (por ejemplo, nada de denegación de servicio en producción).</li>
+      </ul>
+    </article>
+
+    <article class="chapter" id="cap8">
+      <p class="num">CAPÍTULO 08</p><h3>Las fases de una auditoría, en orden</h3>
+      <ol>
+        <li><strong>1. Reconocimiento:</strong> reunir información pública del objetivo autorizado: dominios, subdominios, tecnologías, correos públicos. Pasivo = sin tocar el objetivo. Activo = interactuando con él.</li>
+        <li><strong>2. Escaneo:</strong> descubrir equipos vivos, puertos abiertos y servicios. Aquí la pregunta es “¿qué hay?”.</li>
+        <li><strong>3. Enumeración:</strong> detalle fino de cada servicio: versiones, usuarios válidos, recursos compartidos. “¿Qué hay exactamente y cómo se presenta?”</li>
+        <li><strong>4. Análisis de vulnerabilidades:</strong> cruzar versiones y configuraciones con fallos conocidos (CVE) y malas prácticas.</li>
+        <li><strong>5. Explotación controlada:</strong> demostrar el fallo con la mínima prueba necesaria, solo dentro del alcance. En un informe vale más una captura que demuestra el riesgo que “romper” el sistema.</li>
+        <li><strong>6. Post-explotación:</strong> valorar qué impacto real tendría: qué datos se alcanzarían, a qué otros sistemas se podría saltar. Siempre con autorización expresa.</li>
+        <li><strong>7. Informe:</strong> la fase más importante. Cada hallazgo con severidad, evidencia, impacto y <strong>cómo arreglarlo</strong>. Un pentest sin informe no sirve de nada.</li>
+      </ol>
+      <div class="callout"><p><strong>Pensamiento profesional:</strong> el objetivo no es “entrar”, es <strong>reducir riesgo</strong>. Por eso el informe y la remediación pesan más que la explotación.</p></div>
+    </article>
+
+    <article class="chapter" id="cap9">
+      <p class="num">CAPÍTULO 09</p><h3>Herramientas: qué hace cada una</h3>
+      <p>Herramientas no es igual a saber. Primero va el concepto; la herramienta solo lo ejecuta más rápido. Todas se practican en laboratorio.</p>
+      <div class="grid2">
+        <div class="mini"><b>Nmap</b><span>Escaneo de puertos y servicios. El mapa inicial de casi toda auditoría de red.</span></div>
+        <div class="mini"><b>Wireshark</b><span>Captura y analiza tráfico. Para ver protocolos “por dentro” y diagnosticar problemas.</span></div>
+        <div class="mini"><b>Burp Suite</b><span>Proxy para auditar webs: intercepta peticiones entre navegador y servidor y permite probar controles.</span></div>
+        <div class="mini"><b>Gobuster / ffuf</b><span>Descubren rutas y archivos no enlazados en una web autorizada.</span></div>
+        <div class="mini"><b>Nikto</b><span>Revisa configuraciones web inseguras y archivos peligrosos conocidos.</span></div>
+        <div class="mini"><b>Metasploit</b><span>Framework de explotación para laboratorio. Potente: solo contra tus máquinas vulnerables de práctica.</span></div>
+        <div class="mini"><b>John / Hashcat</b><span>Auditan fuerza de contraseñas a partir de hashes, en entornos autorizados, para demostrar políticas débiles.</span></div>
+        <div class="mini"><b>Kali Linux</b><span>Distribución con herramientas preinstaladas. Se usa en máquina virtual, no como sistema diario.</span></div>
+      </div>
+      <p><strong>Orden sensato para aprenderlas:</strong> Wireshark (entender tráfico) → Nmap (entender servicios) → Burp (entender web) → el resto, según tu especialidad.</p>
+    </article>
+
+    <article class="chapter" id="cap10">
+      <p class="num">CAPÍTULO 10</p><h3>Vulnerabilidades web: el OWASP Top 10, en simple</h3>
+      <p>OWASP publica la lista de riesgos web más críticos. Aquí va la idea y, sobre todo, <strong>cómo se previene</strong> cada uno:</p>
+      <ul>
+        <li><strong>Control de acceso roto:</strong> un usuario llega a páginas o datos de otro cambiando un número en la URL. <em>Defensa:</em> comprobar permiso en el servidor en cada petición, no solo ocultar botones.</li>
+        <li><strong>Inyección (SQLi):</strong> datos del usuario se cuelan como órdenes en la base de datos. <em>Defensa:</em> consultas parametrizadas siempre; nunca armar SQL pegando texto.</li>
+        <li><strong>XSS:</strong> código ajeno se ejecuta en el navegador de la víctima. <em>Defensa:</em> escapar la salida, validar entradas y usar cabeceras de seguridad.</li>
+        <li><strong>Configuración insegura:</strong> paneles por defecto, errores detallados públicos, servicios innecesarios abiertos. <em>Defensa:</em> endurecer (hardening), actualizar y cerrar lo que no se usa.</li>
+        <li><strong>Componentes desactualizados:</strong> librerías con fallos conocidos. <em>Defensa:</em> inventario y actualizaciones constantes.</li>
+        <li><strong>Fallo de autenticación:</strong> contraseñas débiles, sin MFA, sesiones mal protegidas. <em>Defensa:</em> MFA, límites de intentos y cookies seguras.</li>
+        <li><strong>SSRF:</strong> lograr que el servidor haga peticiones a sitios internos. <em>Defensa:</em> listas permitidas y bloquear direcciones internas.</li>
+        <li><strong>Registro y monitoreo insuficientes:</strong> si nadie mira los logs, un ataque pasa invisible. <em>Defensa:</em> logs útiles, alertas y revisión.</li>
+      </ul>
+      <div class="warn"><p>Aprende estas vulnerabilidades en las plataformas del capítulo 15, que están hechas para romperse legalmente. Probarlas en webs reales sin permiso es delito, aunque no robes nada.</p></div>
+    </article>
+
+    <article class="chapter" id="cap11">
+      <p class="num">CAPÍTULO 11</p><h3>Wi-Fi y seguridad inalámbrica</h3>
+      <ul>
+        <li><strong>WPA3</strong> es el estándar actual; WPA2 sigue siendo aceptable con una contraseña larga. WEP y WPA original están rotos: no se usan.</li>
+        <li><strong>WPS</strong> (el botón del router) ha tenido fallos históricos graves. En redes serias se desactiva.</li>
+        <li><strong>Red abierta = sin cifrado.</strong> En cafeterías y aeropuertos, usa HTTPS siempre y considera una VPN de confianza.</li>
+        <li><strong>Nombre de red (SSID)</strong> no da seguridad. La seguridad la da el cifrado + contraseña fuerte + firmware actualizado.</li>
+        <li><strong>Red de invitados:</strong> separa visitas e IoT (bombillas, cámaras baratas) de tus equipos principales.</li>
+        <li>Un auditor Wi-Fi autorizado revisa: cifrado, fuerza de la clave, WPS, firmware, equipos conectados y redes “gemelas” sospechosas.</li>
+      </ul>
+    </article>
+
+    <article class="chapter" id="cap12">
+      <p class="num">CAPÍTULO 12</p><h3>Contraseñas, hashing y autenticación</h3>
+      <p><strong>Cifrar</strong> es reversible con clave. <strong>Hashear</strong> es de un solo sentido: de la contraseña sale una huella, pero de la huella no sale la contraseña. Los sistemas serios guardan hashes con algoritmos lentos (bcrypt, Argon2) y una <strong>sal</strong> única por usuario, para que dos contraseñas iguales no den la misma huella.</p>
+      <ul>
+        <li>La fuerza real está en la <strong>longitud</strong>: una frase de 4–5 palabras supera a símbolos raros y cortos.</li>
+        <li><strong>Nunca reutilices</strong> contraseñas entre sitios. Una filtración en uno abre todos.</li>
+        <li><strong>Gestor de contraseñas:</strong> genera y guarda una distinta por sitio. Tú solo memorizas una maestra fuerte.</li>
+        <li><strong>MFA / 2FA:</strong> contraseña + código o llave. Actívalo primero en correo, banco y redes principales: el correo es la llave para recuperar todo lo demás.</li>
+        <li>Los ataques de fuerza bruta y de diccionario funcionan contra contraseñas cortas y comunes — por eso las políticas y el MFA importan más que “ser listo”.</li>
+      </ul>
+    </article>
+
+    <article class="chapter" id="cap13">
+      <p class="num">CAPÍTULO 13</p><h3>Phishing e ingeniería social: el ataque a la persona</h3>
+      <p>La mayoría de brechas reales no empiezan con código brillante: empiezan con un mensaje que engaña a una persona. Reconocerlo es una habilidad de seguridad tan importante como Nmap.</p>
+      <ul>
+        <li><strong>Señales:</strong> urgencia (“tu cuenta se cierra hoy”), remitente parecido pero no igual, enlaces que no coinciden con el texto, adjuntos inesperados, petición de códigos o contraseñas.</li>
+        <li><strong>Regla de oro:</strong> ninguna empresa seria te pide contraseña o código 2FA por correo, SMS o llamada.</li>
+        <li><strong>Verifica por otro canal:</strong> entra tú a la web oficial escribiendo la dirección, o llama al número oficial. Nunca uses el enlace del mensaje sospechoso.</li>
+        <li><strong>En una auditoría</strong>, las campañas de phishing simulado solo se hacen con contrato y aviso a dirección, y sirven para formar al personal, no para humillar a nadie.</li>
+      </ul>
+    </article>
+
+    <article class="chapter" id="cap14">
+      <p class="num">CAPÍTULO 14</p><h3>Tu laboratorio legal en casa</h3>
+      <p>Todo lo potente se practica aquí dentro, aislado de Internet y de equipos reales.</p>
+      <ol>
+        <li>Instala un hipervisor gratuito: <strong>VirtualBox</strong> o VMware Workstation.</li>
+        <li>Crea una máquina virtual con <strong>Kali Linux</strong> (la atacante, solo en el laboratorio).</li>
+        <li>Crea máquinas <strong>deliberadamente vulnerables</strong> para practicar: Metasploitable, o sistemas viejos sin actualizar, solo para tu laboratorio.</li>
+        <li>Conéctalas en una <strong>red interna / host-only</strong> del hipervisor, sin salida a tu red real.</li>
+        <li>Haz <strong>snapshots</strong> antes de cada práctica: si rompes algo, vuelves atrás en segundos.</li>
+        <li>Lleva notas de cada práctica: objetivo, comandos, qué encontraste y qué aprendiste. Las notas son tu verdadero progreso.</li>
+      </ol>
+      <div class="callout"><p><strong>Con poco equipo también se puede:</strong> un teléfono o una computadora modesta alcanzan para empezar con plataformas online (capítulo siguiente) y con máquinas virtuales ligeras, una a la vez.</p></div>
+    </article>
+
+    <article class="chapter" id="cap15">
+      <p class="num">CAPÍTULO 15</p><h3>Dónde practicar, gratis y legal</h3>
+      <div class="grid2">
+        <div class="mini"><b>TryHackMe</b><span>La mejor puerta de entrada: rutas guiadas de redes, Linux y pentesting desde cero.</span></div>
+        <div class="mini"><b>Hack The Box</b><span>Máquinas y retos por niveles, cuando ya tienes base.</span></div>
+        <div class="mini"><b>PortSwigger Web Security Academy</b><span>El curso gratuito de seguridad web de los creadores de Burp. Imprescindible para OWASP.</span></div>
+        <div class="mini"><b>OverTheWire</b><span>Wargames clásicos de Linux y terminal, empezando por Bandit.</span></div>
+        <div class="mini"><b>picoCTF</b><span>Competición educativa con retos para principiantes todo el año.</span></div>
+        <div class="mini"><b>Cisco NetAcad / freeCodeCamp</b><span>Fundamentos de redes y programación sin costo.</span></div>
+      </div>
+      <p>Certificaciones que el sector reconoce cuando avances: primero fundamentos de redes (tipo Network+ o CCNA), luego seguridad (Security+) y más adelante pentesting (eJPT, CEH o PNPT). No corras: sin base de redes y Linux, ninguna certificación te hace pentester.</p>
+    </article>
+
+    <article class="chapter" id="cap16">
+      <p class="num">CAPÍTULO 16</p><h3>Ruta de estudio de 90 días</h3>
+      <ul>
+        <li><strong>Días 1–30 — Redes y Linux:</strong> capítulos 1–6 de este tutorial, comandos básicos a diario, y la ruta de redes de TryHackMe. Meta: explicar IP, puerto, DNS y TCP sin mirar apuntes.</li>
+        <li><strong>Días 31–60 — Web y herramientas:</strong> cómo funciona HTTP con Burp, Wireshark para ver tráfico real de tu laboratorio, Nmap en tus máquinas virtuales. Meta: auditar tu propio laboratorio y escribir el informe.</li>
+        <li><strong>Días 61–90 — Práctica guiada:</strong> laboratorios de OWASP en PortSwigger, máquinas fáciles y notas de todo. Meta: completar 10 laboratorios documentados.</li>
+      </ul>
+      <p><strong>Cada semana:</strong> 4 días de práctica, 1 día de teoría, 1 día de repetir lo difícil, 1 de descanso. Repetir cambiando ejemplos — como ya haces con Python — fija lo aprendido mucho más que avanzar sin parar.</p>
+    </article>
+
+    <article class="chapter" id="cap17">
+      <p class="num">CAPÍTULO 17</p><h3>Glosario rápido</h3>
+      <div class="grid2">
+        <div class="mini"><b>CVE</b><span>Identificador público de una vulnerabilidad conocida, con su descripción.</span></div>
+        <div class="mini"><b>Payload</b><span>La acción que se ejecuta al aprovechar un fallo. En laboratorio, siempre controlado.</span></div>
+        <div class="mini"><b>Enumeración</b><span>Listar con detalle usuarios, servicios, versiones y recursos de un objetivo autorizado.</span></div>
+        <div class="mini"><b>Hardening</b><span>Endurecer un sistema: actualizar, cerrar puertos, quitar lo innecesario, exigir MFA.</span></div>
+        <div class="mini"><b>VPN</b><span>Túnel cifrado entre tu equipo y otra red. Útil en redes públicas y trabajo remoto.</span></div>
+        <div class="mini"><b>Log</b><span>Registro de eventos. Sin logs no hay detección ni investigación posible.</span></div>
+        <div class="mini"><b>Zero-day</b><span>Fallo aún sin parche cuando se descubre. Por eso actualizar rápido importa.</span></div>
+        <div class="mini"><b>Bug bounty</b><span>Programas donde empresas pagan por reportar fallos en SU alcance oficial. La forma legal de “hackear” sistemas reales.</span></div>
+      </div>
+    </article>
+
+    <article class="chapter" id="cap18">
+      <p class="num">CAPÍTULO 18</p><h3>Checklist final: lo que ya deberías saber</h3>
+      <ul class="checklist">
+        <li>Explicar qué son LAN, WAN, router, switch, DHCP, NAT y firewall</li>
+        <li>Nombrar las capas OSI y decir qué hace cada una</li>
+        <li>Distinguir IP privada y pública, y explicar qué es un puerto</li>
+        <li>Decir de memoria los puertos de SSH, DNS, HTTP, HTTPS y MySQL</li>
+        <li>Explicar DNS, HTTP/HTTPS, ARP, ICMP y SSH sin apuntes</li>
+        <li>Contar qué pasa, paso a paso, cuando abres una página web</li>
+        <li>Nombrar las 7 fases de una auditoría y qué se hace en cada una</li>
+        <li>Decir para qué sirven Nmap, Wireshark y Burp Suite</li>
+        <li>Explicar inyección SQL y XSS, y cómo se previenen</li>
+        <li>Montar (o describir) un laboratorio con máquinas virtuales aisladas</li>
+        <li>Repetir la regla de oro: sin permiso por escrito, no se toca</li>
+      </ul>
+      <div class="callout"><p><strong>Siguiente paso hoy mismo:</strong> crea tu cuenta en TryHackMe, completa la primera sala de redes y anota 5 palabras nuevas del glosario con tus propias palabras. Eso, repetido cada día, es lo que convierte a un principiante en profesional.</p></div>
+    </article>
+  </section>
+
+  <!-- SERVICIOS -->
+  <section id="servicios">
+    <div class="sec-head"><p class="sec-tag">01 — servicios</p><h2>Lo que puedo hacer por ti</h2><p class="sec-lead">Los mismos servicios que ya responde mi bot de Python, ahora en web.</p></div>
+    <div class="services">
+      <article class="service"><span class="glyph">&lt;/&gt;</span><h3>Páginas web</h3><p>Páginas claras y rápidas para tu negocio o proyecto: presentación, servicios y contacto, listas para verse bien en el teléfono y en la computadora.</p><div class="facts"><span>Precio: <b>desde $50</b></span><span>Tiempo: <b>24–48 horas</b></span></div></article>
+      <article class="service"><span class="glyph">▣</span><h3>Apps</h3><p>Aplicaciones a tu medida, empezando por herramientas simples que resuelven un problema real: calculadoras, menús, registros y más.</p><div class="facts"><span>Precio: <b>desde $150</b></span><span>Tiempo: <b>3–7 días</b></span></div></article>
+      <article class="service"><span class="glyph">&gt;_</span><h3>Bots con IA</h3><p>Bots que responden solos a tus clientes: saludan, dan precios, explican tus servicios y contestan lo que les pregunten, como el bot que ya hice en Python.</p><div class="facts"><span>Base: <b>Python + IA</b></span><span>Responde: <b>24/7, solo</b></span></div></article>
+    </div>
+  </section>
+
+  <!-- PROGRESO -->
+  <section id="progreso">
+    <div class="sec-head"><p class="sec-tag">02 — mi camino</p><h2>Python: 10 lecciones completadas</h2><p class="sec-lead">Esto ya lo sé hacer en Python, practicado en Pydroid 3 y repetido todos los días cambiando nombres, números y respuestas. Ahora toca HTML.</p></div>
+    <div class="progress-card">
+      <div class="lesson"><span class="num">01</span><span class="name">print</span><span class="desc">Mostrar texto y resultados en pantalla</span><span class="done">✓ hecho</span></div>
+      <div class="lesson"><span class="num">02</span><span class="name">Variables</span><span class="desc">Guardar nombres, textos y números</span><span class="done">✓ hecho</span></div>
+      <div class="lesson"><span class="num">03</span><span class="name">input</span><span class="desc">Preguntar datos al usuario y convertirlos</span><span class="done">✓ hecho</span></div>
+      <div class="lesson"><span class="num">04</span><span class="name">if / else</span><span class="desc">Que el programa decida solo</span><span class="done">✓ hecho</span></div>
+      <div class="lesson"><span class="num">05</span><span class="name">Bucles for</span><span class="desc">Repetir sin escribirlo 525 veces</span><span class="done">✓ hecho</span></div>
+      <div class="lesson"><span class="num">06</span><span class="name">Listas</span><span class="desc">Muchos datos en una sola variable</span><span class="done">✓ hecho</span></div>
+      <div class="lesson"><span class="num">07</span><span class="name">Funciones</span><span class="desc">Guardar código con nombre y reutilizarlo</span><span class="done">✓ hecho</span></div>
+      <div class="lesson"><span class="num">08</span><span class="name">Calculadora</span><span class="desc">Mini-app juntando todo lo anterior</span><span class="done">✓ hecho</span></div>
+      <div class="lesson"><span class="num">09</span><span class="name">Menú con while</span><span class="desc">Un programa que no se cierra solo</span><span class="done">✓ hecho</span></div>
+      <div class="lesson"><span class="num">10</span><span class="name">Mi bot</span><span class="desc">Responde a «hola», «precio» y más</span><span class="done">✓ hecho</span></div>
+      <div class="lesson"><span class="num">11</span><span class="name">HTML</span><span class="desc">Esta misma página web</span><span class="now">← estoy aquí</span></div>
+    </div>
+  </section>
+
+  <!-- HTML -->
+  <section id="html">
+    <div class="sec-head"><p class="sec-tag">03 — lección 1 de html</p><h2>Así se empieza una página web</h2><p class="sec-lead">HTML es el esqueleto de una página. Este es el código mínimo para empezar, con cada parte explicada.</p></div>
+    <div class="bigcode">
+      <div class="code-bar"><span>index.html — cópialo y pégalo en tu editor</span><button class="copy-btn" id="copyBtn" type="button">Copiar código</button></div>
+      <pre id="codeShown"><code><span class="tag">&lt;!DOCTYPE html&gt;</span>          <span class="com">&lt;!-- le dice al navegador: esto es HTML --&gt;</span>
+<span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="attr">"es"</span><span class="tag">&gt;</span>        <span class="com">&lt;!-- aquí empieza la página --&gt;</span>
+  <span class="tag">&lt;head&gt;</span>                  <span class="com">&lt;!-- datos que no se ven --&gt;</span>
+    <span class="tag">&lt;title&gt;</span><span class="txt">JO Dev Studio</span><span class="tag">&lt;/title&gt;</span>  <span class="com">&lt;!-- el nombre en la pestaña --&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>                  <span class="com">&lt;!-- todo lo que SÍ se ve --&gt;</span>
+    <span class="tag">&lt;h1&gt;</span><span class="txt">Hola, soy Jhankiel</span><span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;p&gt;</span><span class="txt">Bienvenido a JO Dev Studio.</span><span class="tag">&lt;/p&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span>                 <span class="com">&lt;!-- aquí termina la página --&gt;</span></code></pre>
+    </div>
+    <div class="tag-table">
+      <div class="tag-item"><code>&lt;h1&gt; … &lt;/h1&gt;</code><p>El título grande de la página. Van de h1 (el más grande) a h6.</p></div>
+      <div class="tag-item"><code>&lt;p&gt; … &lt;/p&gt;</code><p>Un párrafo de texto normal. Cada idea en su propio párrafo.</p></div>
+      <div class="tag-item"><code>&lt;head&gt;</code><p>La parte invisible: el título de la pestaña y los datos de la página.</p></div>
+      <div class="tag-item"><code>&lt;body&gt;</code><p>La parte visible: todo lo que el visitante ve va dentro del body.</p></div>
+    </div>
+    <div class="demo">
+      <h3>Pruébalo tú mismo</h3>
+      <p class="demo-lead">Escribe un título y cambia su color. Eso es exactamente lo que hace un <code>&lt;h1&gt;</code> en una página real.</p>
+      <div class="demo-controls">
+        <input type="text" id="titleInput" value="Hola, soy Jhankiel" maxlength="60" aria-label="Escribe el título de tu página" />
+        <div class="swatches" role="group" aria-label="Color del título">
+          <button class="swatch" type="button" data-color="" style="background:var(--ink)" aria-pressed="true" aria-label="Color normal"></button>
+          <button class="swatch" type="button" data-color="#0d7a4a" style="background:#0d7a4a" aria-pressed="false" aria-label="Color verde"></button>
+          <button class="swatch" type="button" data-color="#c2410c" style="background:#c2410c" aria-pressed="false" aria-label="Color naranja"></button>
+          <button class="swatch" type="button" data-color="#1d4ed8" style="background:#1d4ed8" aria-pressed="false" aria-label="Color azul"></button>
+        </div>
+      </div>
+      <div class="preview"><p class="pv-tag">&lt;h1&gt; así se vería en tu página &lt;/h1&gt;</p><p id="pvTitle">Hola, soy Jhankiel</p><p id="pvText">Bienvenido a JO Dev Studio.</p></div>
+    </div>
+  </section>
+
+  <section><div class="contact"><div><h2>¿Quieres una página, una app o un bot?</h2><p>Dime qué necesitas y lo construimos. Mientras tanto, puedes ver mi código en GitHub.</p></div><a class="btn btn-primary" href="https://github.com/JODevStudio" target="_blank" rel="noopener">Mi GitHub: JODevStudio →</a></div></section>
+  <footer>JO Dev Studio · Hecho por Jhankiel</footer>
+</div>
+<script>
+var plainCode=["<!DOCTYPE html>",'<html lang="es">',"  <head>","    <title>JO Dev Studio</title>","  </head>","  <body>","    <h1>Hola, soy Jhankiel</h1>","    <p>Bienvenido a JO Dev Studio.</p>","  </body>","</html>"].join("\n");
+var copyBtn=document.getElementById("copyBtn");
+copyBtn.addEventListener("click",function(){
+  function done(){copyBtn.textContent="✓ Copiado";setTimeout(function(){copyBtn.textContent="Copiar código"},2000)}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(plainCode).then(done,function(){fallback()})}else{fallback()}
+  function fallback(){var ta=document.createElement("textarea");ta.value=plainCode;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done()}catch(e){}document.body.removeChild(ta)}
+});
+var input=document.getElementById("titleInput");var pvTitle=document.getElementById("pvTitle");
+input.addEventListener("input",function(){pvTitle.textContent=input.value.trim()===""?"Tu título aquí":input.value});
+var swatches=document.querySelectorAll(".swatch");
+swatches.forEach(function(btn){btn.addEventListener("click",function(){swatches.forEach(function(b){b.setAttribute("aria-pressed","false")});btn.setAttribute("aria-pressed","true");pvTitle.style.color=btn.getAttribute("data-color")})});
+</script>
+</body>
+</html>
